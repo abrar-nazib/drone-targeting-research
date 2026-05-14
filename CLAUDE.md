@@ -1,23 +1,41 @@
 # Drone Targeting Research
 
-## Goal
+## Goal (current framing — pivoted from the original README)
 
-Build a ROS 2-based simulation environment to train an FPV drone to follow a
-target. The pipeline this repo is meant to support, end-to-end:
+Academic / paper-shaped research project: **autonomous landing of an FPV
+quadrotor on a moving ground vehicle, using stereo onboard perception.**
 
-1. ROS 2 (Jazzy) installed on the SSD (this disk), not the user's main device.
-2. A photoreal-quality simulator wired to ROS 2.
-3. Two world variants:
-   - **Urban**: cars, humans, roads, houses.
-   - **Open terrain**: trees, forest, mountains, roads, occasional houses.
-   World assets must look as close to picture-perfect as possible.
-4. A dataset captured from a stereo camera mounted on the simulated drone,
-   sampled across many positions, with per-pixel semantic segmentation labels.
-5. A stereo vision model trained on that dataset to do (a) depth estimation
-   and (b) semantic segmentation.
+The contribution lives in the **control / trajectory planner / state
+estimator / landing controller** — not in perception and not in
+photorealism. Perception is a building block: pretrained foundation
+model on Gazebo's RGB output (or ground-truth depth in early prototyping).
+The Gazebo orchard / construction worlds are the deployment testbench;
+visuals do not need to be photoreal for control-loop research.
 
-The README.md in this directory is the source of truth for scope. Do not
-silently expand beyond it.
+The original README scope ("create dataset, train stereo+seg model from
+scratch, photoreal worlds") is **superseded by this control framing.**
+The 4 GB GPU made photoreal interactive sim impossible (CARLA / UE5 / Isaac
+Sim all need 6-8 GB+). Instead of fighting the hardware wall we use
+existing perception models and put the research effort in the control
+layer.
+
+The pipeline this repo supports:
+
+1. ROS 2 Jazzy (installed at `/opt/ros/jazzy/`).
+2. **Gazebo Harmonic** as the simulator (already wired up).
+3. **PX4-Autopilot v1.16 SITL** with the FPV-tuned x500 (TWR 7-12:1) for
+   real flight dynamics. Installed at `/media/abrar/AbrarSSD/ROS/PX4-Autopilot/`.
+4. Existing Gazebo worlds (orchard, construction, etc.) as the scene.
+   Visual fidelity is not in scope.
+5. A moving target vehicle (Fuel car driven on a programmed path through
+   the world) as the landing target.
+6. A target detection / tracking pipeline (ground-truth pose initially,
+   foundation perception model later if time permits).
+7. A trajectory planner + landing controller — the actual paper
+   contribution.
+
+The README.md remains in the repo as the original scope statement.
+Anything in this CLAUDE.md supersedes it for current work.
 
 ## Hardware & environment context
 
