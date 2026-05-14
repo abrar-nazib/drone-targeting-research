@@ -199,26 +199,52 @@ as a top-level command via `bin/px4-alias.sh`.
 
 ### `commander` — state machine, arming, mode switching
 
+Verified against `commander --help` on PX4 v1.16 SITL (gz_x500):
+
 ```
 commander arm                      # arm (preflight checks must pass)
 commander arm -f                   # arm bypassing preflight (DEV ONLY)
 commander disarm                   # disarm (rejects if airborne)
-commander disarm -f                # disarm even if airborne
-commander takeoff                  # auto takeoff to default altitude
-commander land                     # auto land
-commander mode <mode>              # mode ∈ {manual,acro,offboard,stabilized,
-                                   #         altctl,posctl,position_slow,
-                                   #         auto:mission,auto:loiter,auto:rtl,
-                                   #         auto:takeoff,auto:land,auto:precland,ext1}
+commander disarm -f                # disarm even if airborne (kills motors)
+commander takeoff                  # auto takeoff to MIS_TAKEOFF_ALT (default 2.5 m)
+commander land                     # auto land at current position
+commander mode <mode>              # mode ∈ {manual, acro, offboard, stabilized,
+                                   #         altctl, posctl, position:slow,
+                                   #         auto:mission, auto:loiter, auto:rtl,
+                                   #         auto:takeoff, auto:land}
 commander check                    # run + report all preflight checks
-commander calibrate <type>         # type ∈ {mag,baro,accel,gyro,level,esc,airspeed}
-commander safety on|off            # toggle prearm safety state
-commander set_ekf_origin <lat> <lon> <alt>
-commander set_heading <deg>        # 0–360 from True North
-commander termination on|off       # latch lockdown (kills outputs)
+commander calibrate <type>         # type ∈ {mag, baro, accel, gyro, level, esc, airspeed}
+commander lockdown on|off          # latch outputs off (kill switch)
+commander set_ekf_origin <lat> <lon> <alt>   # set GPS / EKF origin at runtime
+commander transition               # VTOL transition
+commander pair                     # bind radio receiver (real HW)
+commander status                   # print state info
+commander stop                     # stop the commander module
 ```
 
-(Source: <https://docs.px4.io/main/en/modules/modules_system.html>)
+**Note**: PX4 mode names use `:` between hierarchy levels (`auto:rtl`,
+`position:slow`), not `_`. Earlier drafts of this file (and any
+agent-summarised docs you might find) listed `position_slow` /
+`auto_takeoff` etc. — those are wrong and the binary will reject them
+with `unknown command`.
+
+**Commands explicitly NOT in v1.16's `commander`:**
+- `commander set_heading` — does not exist. To rotate the drone from
+  `pxh>`, switch to a setpoint-streaming control path (offboard, QGC,
+  MAVSDK). There is no built-in pxh> "rotate" command.
+- `commander safety on|off` — does not exist. For emergency disarm in
+  air use `commander disarm -f`. For latched output cutoff use
+  `commander lockdown on`.
+- `commander termination on|off` — does not exist. Use `lockdown` for
+  the same effect.
+- No `goto` / `move-to-position` commands. Movement requires QGC,
+  MAVSDK, or ROS 2 offboard.
+
+(Source: `commander --help` from a running PX4 v1.16 SITL session.
+The PX4 docs page <https://docs.px4.io/main/en/modules/modules_system.html>
+exists but is auto-generated and has been out of sync with the binary
+in past releases — when in doubt, run `commander --help` and trust the
+binary.)
 
 **`commander check` does not list specific failures** in the v1.16
 console output — it just prints `Preflight check: FAILED` or

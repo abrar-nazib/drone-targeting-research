@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="x500_stereo_depth">
+    <!-- Inherit the stock x500 (frame, motors, IMU/baro/mag/navsat).
+         All of x500's plugins + sensors are flattened in via merge,
+         so the airframe init script (4001_gz_x500) sees the same
+         motor topology and sensor topic naming as the unmodified x500. -->
+    <include merge="true">
+      <uri>x500</uri>
+    </include>
+
+    <!-- Forward-facing camera pod. Visual is the OakD-Lite stereo cam
+         mesh (real-looking, not a block). The OakD-Lite model itself
+         ships in PX4's Tools/simulation/gz/models/ and is on
+         GZ_SIM_RESOURCE_PATH at runtime. -->
+    <link name="camera_link">
+      <pose relative_to="base_link">0.12 0 0.025 0 0 0</pose>
+
+      <!-- Massless-ish: 1 g + tiny inertia. The stock x500 control
+           allocator is tuned for the bare 2.0 kg airframe with CoM at
+           origin. Adding ~60 g at +12 cm forward (real OakD-Lite mass)
+           shifts the CoM enough to bias rotor mixing and produce a
+           continuous yaw torque ("drone goes round and round"). For
+           sim purposes the camera contributes nothing physically. -->
+      <inertial>
+        <mass>0.001</mass>
+        <inertia>
+          <ixx>1e-7</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>1e-7</iyy><iyz>0</iyz>
+          <izz>1e-7</izz>
+        </inertia>
+      </inertial>
+
+      <visual name="camera_body_visual">
+        <geometry>
+          <mesh>
+            <uri>model://OakD-Lite/meshes/OakDLite.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+
+      <collision name="camera_body_collision">
+        <pose>0.00358 -0.03 0.014 0 0 0</pose>
+        <geometry>
+          <box><size>0.0175 0.091 0.028</size></box>
+        </geometry>
+      </collision>
+
+      <!-- Stereo left RGB. 10 cm baseline (matches existing camera_rig
+           used by the dataset_capture pipeline). -->
+      <sensor name="stereo_left" type="camera">
+        <pose>0 0.05 0 0 0 0</pose>
+        <topic>stereo/left</topic>
+        <update_rate>10</update_rate>
+        <always_on>1</always_on>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.5708</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip><near>0.05</near><far>200</far></clip>
+          <optical_frame_id>stereo_left_optical</optical_frame_id>
+          <camera_info_topic>stereo/left/camera_info</camera_info_topic>
+        </camera>
+      </sensor>
+
+      <!-- Depth (R_FLOAT32, metres) co-located with stereo_left so its
+           output can be used as ground truth alongside whatever
+           foundation-model stereo runs at inference time. -->
+      <sensor name="stereo_left_depth" type="depth_camera">
+        <pose>0 0.05 0 0 0 0</pose>
+        <topic>stereo/left/depth</topic>
+        <update_rate>10</update_rate>
+        <always_on>1</always_on>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.5708</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+            <format>R_FLOAT32</format>
+          </image>
+          <clip><near>0.05</near><far>200</far></clip>
+          <optical_frame_id>stereo_left_optical</optical_frame_id>
+        </camera>
+      </sensor>
+
+      <!-- Stereo right RGB. Same intrinsics as left, baseline 10 cm. -->
+      <sensor name="stereo_right" type="camera">
+        <pose>0 -0.05 0 0 0 0</pose>
+        <topic>stereo/right</topic>
+        <update_rate>10</update_rate>
+        <always_on>1</always_on>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.5708</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip><near>0.05</near><far>200</far></clip>
+          <optical_frame_id>stereo_right_optical</optical_frame_id>
+          <camera_info_topic>stereo/right/camera_info</camera_info_topic>
+        </camera>
+      </sensor>
+    </link>
+
+    <joint name="camera_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>camera_link</child>
+    </joint>
+  </model>
+</sdf>
