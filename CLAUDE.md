@@ -136,7 +136,9 @@ drone_targeting_research/
 ├── SETUP.md              # rebuild-from-clean instructions
 ├── .gitignore            # excludes build artifacts, third-party clones, large textures
 ├── .claude/
-│   ├── skills/ros/       # comprehensive ROS 2 Jazzy reference (~17 files)
+│   ├── skills/
+│   │   ├── ros/          # comprehensive ROS 2 Jazzy reference (~17 files)
+│   │   └── px4-gazebo/   # PX4 SITL + Gazebo Harmonic + uXRCE-DDS reference (8 files)
 │   └── agents/
 │       └── ros-expert.md # subagent: ROS 2 / Gazebo / drone-sim specialist
 ├── tools/                # all the python helpers (label_world, prefetch_fuel, etc.)
@@ -165,6 +167,13 @@ drone_targeting_research/
 - **Use the `ros` skill** as the in-context cheat sheet for CLI commands,
   workspace layout, and core concepts. It is the first thing to consult
   before reaching for `WebFetch` against `docs.ros.org`.
+- **Use the `px4-gazebo` skill** for any PX4 SITL / Gazebo Harmonic /
+  uXRCE-DDS / offboard / `pxh>` / `failsafe_flags` / EKF2-debugging
+  question. Covers all `gz_*` make targets, every stock world, custom
+  airframes, FPV tuning, the full `/fmu/in/*` `/fmu/out/*` topic
+  catalogue, and the lockstep-starvation + EKF2-missing-data diagnosis
+  trees specific to this hardware. **Read the skill before web-searching
+  PX4 docs.**
 - ROS distribution is **Jazzy**. Don't generate commands for Humble / Iron /
   Foxy / Rolling without explicit confirmation.
 - **Gazebo means modern Gazebo Harmonic** (`gz sim`), not Gazebo Classic.
