@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<sdf version="1.10">
+  <world name="construction_labeled">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <scene>
+      <ambient>1 1 1 1</ambient>
+      <background>0.3 0.7 0.9 1</background>
+      <sky>
+        <clouds>
+          <speed>12</speed>
+        </clouds>
+      </sky>
+      <shadows>1</shadows>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.9 0.85 1</diffuse>
+      <specular>0.3 0.3 0.3 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+
+    <!-- One model per material from the subdivided office_construction.dae,
+         each with its semantic label baked into the visual. The original
+         monolithic mesh is reassembled by spawning all of them at (0,0,0). -->
+
+    <!-- Outdoor clay/dirt ground around the construction site -->
+    <model name="construction_ground">
+      <static>true</static>
+      <pose>0 0 0 1.5708 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://office_subdivided/meshes/GroundClay002_3K.glb</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>10</label></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Brick walls -->
+    <model name="construction_brick_walls">
+      <static>true</static>
+      <pose>0 0 0 1.5708 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://office_subdivided/meshes/Bricks01_3K.glb</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>51</label></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Concrete walls -->
+    <model name="construction_concrete_walls">
+      <static>true</static>
+      <pose>0 0 0 1.5708 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://office_subdivided/meshes/ConcreteWall001_3K.glb</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>51</label></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Metal cladding / corrugated iron / metal walls (all building structure) -->
+    <model name="construction_metal_corrugated">
+      <static>true</static>
+      <pose>0 0 0 1.5708 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://office_subdivided/meshes/MetalCorrugatedIronSheet002_3K.glb</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>50</label></plugin>
+        </visual>
+      </link>
+    </model>
+    <model name="construction_metal_corroded">
+      <static>true</static>
+      <pose>0 0 0 1.5708 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://office_subdivided/meshes/MetalCorrodedHeavy001_3K.glb</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>50</label></plugin>
+        </visual>
+      </link>
+    </model>
+    <model name="construction_metal_spotty">
+      <static>true</static>
+      <pose>0 0 0 1.5708 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://office_subdivided/meshes/MetalSpottyDiscoloration001_3K.glb</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>50</label></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Wood flooring (interior building) -->
+    <model name="construction_wood_floor_1">
+      <static>true</static>
+      <pose>0 0 0 1.5708 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://office_subdivided/meshes/WoodFlooring061_3K.glb</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>50</label></plugin>
+        </visual>
+      </link>
+    </model>
+    <model name="construction_wood_floor_2">
+      <static>true</static>
+      <pose>0 0 0 1.5708 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://office_subdivided/meshes/WoodFlooringMahoganyAfricanSanded001_3K.glb</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>50</label></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Construction props (cement bags etc.) -->
+    <model name="construction_props">
+      <static>true</static>
+      <pose>0 0 0 1.5708 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://office_subdivided/meshes/concrete_bag.glb</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>60</label></plugin>
+        </visual>
+      </link>
+    </model>
+  </world>
+</sdf>

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<sdf version="1.10">
+  <world name="orchard_labeled">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <scene>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0.6 0.7 0.85 1</background>
+      <sky>
+        <clouds>
+          <speed>8</speed>
+        </clouds>
+      </sky>
+      <shadows>1</shadows>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1.0 1.0 0.95 1</diffuse>
+      <specular>0.3 0.3 0.3 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+
+    <!-- Orchard ground (real aerial-photo baked texture, has tire tracks). -->
+    <model name="orchard_ground">
+      <static>true</static>
+      <pose>-23.97 -18.92 0 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://orchard/orchard_world.dae</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>10</label></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Tree trunks (label 31 = tree) -->
+    <model name="orchard_trunks">
+      <static>true</static>
+      <pose>-23.97 -18.92 0 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://orchard/orchard_trunks.dae</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>31</label></plugin>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Tree leaves (label 30 = vegetation, distinct from trunks for finer
+         segmentation supervision). -->
+    <model name="orchard_leaves">
+      <static>true</static>
+      <pose>-23.97 -18.92 0 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><mesh><uri>model://orchard/orchard_leaves.dae</uri></mesh></geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>30</label></plugin>
+        </visual>
+      </link>
+    </model>
+  </world>
+</sdf>

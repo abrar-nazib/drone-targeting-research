@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<sdf version="1.10">
+  <world name="data_collection">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+      <background_color>0.6 0.7 0.85 1.0</background_color>
+    </plugin>
+
+    <scene>
+      <ambient>0.5 0.5 0.5 1</ambient>
+      <background>0.6 0.7 0.85 1</background>
+      <sky/>
+    </scene>
+
+    <light type="directional" name="sun">
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.95 0.95 0.9 1</diffuse>
+      <specular>0.3 0.3 0.3 1</specular>
+      <direction>-0.5 0.3 -1</direction>
+      <cast_shadows>true</cast_shadows>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+
+    <!-- Three 40x10 ground strips: GRASS (north), ROAD (centre), SOIL (south).
+         Each is a static model with a 20x10 plane visual using diffuse colour
+         (green / dark grey / brown). PBR with <albedo_map> and primitive
+         geometry didn't load reliably in Harmonic; flat colours guarantee
+         visual distinction for the segmentation model. Each strip is two
+         tiles side-by-side so the dataset has clear boundary transitions. -->
+
+    <!-- GRASS: y = 5..15, label 32 (bush_grass) -->
+    <model name="grass_w">
+      <static>true</static>
+      <pose>-10 10 0 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+          <material>
+            <ambient>0.15 0.35 0.08 1</ambient>
+            <diffuse>0.25 0.55 0.12 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>32</label></plugin>
+        </visual>
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="grass_e">
+      <static>true</static>
+      <pose>10 10 0 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+          <material>
+            <ambient>0.15 0.35 0.08 1</ambient>
+            <diffuse>0.25 0.55 0.12 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>32</label></plugin>
+        </visual>
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- ROAD: y = -5..+5, label 10 (ground/road) -->
+    <model name="road_w">
+      <static>true</static>
+      <pose>-10 0 0 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+          <material>
+            <ambient>0.1 0.1 0.11 1</ambient>
+            <diffuse>0.2 0.2 0.22 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>10</label></plugin>
+        </visual>
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="road_e">
+      <static>true</static>
+      <pose>10 0 0 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+          <material>
+            <ambient>0.1 0.1 0.11 1</ambient>
+            <diffuse>0.2 0.2 0.22 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>10</label></plugin>
+        </visual>
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- SOIL: y = -15..-5, label 80 (terrain_natural) -->
+    <model name="soil_w">
+      <static>true</static>
+      <pose>-10 -10 0 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+          <material>
+            <ambient>0.25 0.15 0.08 1</ambient>
+            <diffuse>0.45 0.28 0.15 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>80</label></plugin>
+        </visual>
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="soil_e">
+      <static>true</static>
+      <pose>10 -10 0 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+          <material>
+            <ambient>0.25 0.15 0.08 1</ambient>
+            <diffuse>0.45 0.28 0.15 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>80</label></plugin>
+        </visual>
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>20 10</size></plane></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- Props for label diversity -->
+
+    <!-- Two cars on the road -->
+    <include>
+      <name>car_pickup</name>
+      <pose>-5 0 0.05 0 0 1.5708</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pickup</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>40</label></plugin></include>
+    <include>
+      <name>car_suv</name>
+      <pose>5 0 0.05 0 0 1.5708</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/SUV</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>40</label></plugin></include>
+
+    <!-- A pine tree on the grass -->
+    <include>
+      <name>tree_pine</name>
+      <pose>8 12 0.05 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine Tree</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>31</label></plugin></include>
+
+    <!-- A walking actor on the soil -->
+    <include>
+      <name>actor_1</name>
+      <pose>-5 -10 1.0 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/chapulina/models/Walking actor</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>20</label></plugin></include>
+
+    <!-- A construction cone at the road/soil border -->
+    <include>
+      <name>cone_1</name>
+      <pose>2 -5 0.05 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Construction Cone</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>60</label></plugin></include>
+
+    <!-- A lamp post at the grass/road border -->
+    <include>
+      <name>lamp_post</name>
+      <pose>-15 5 0.05 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Lamp Post</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>60</label></plugin></include>
+  </world>
+</sdf>

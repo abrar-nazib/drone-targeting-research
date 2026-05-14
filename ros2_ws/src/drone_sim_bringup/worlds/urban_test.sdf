@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<sdf version="1.10">
+  <world name="urban_test">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+      <background_color>0.6 0.7 0.85 1.0</background_color>
+    </plugin>
+
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.6 0.7 0.85 1</background>
+      <sky/>
+    </scene>
+
+    <light type="directional" name="sun">
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.9 0.85 1</diffuse>
+      <specular>0.3 0.3 0.3 1</specular>
+      <direction>-0.5 0.3 -1</direction>
+      <cast_shadows>true</cast_shadows>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>200 200</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>200 200</size></plane></geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+          </material>
+        <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>10</label></plugin></visual>
+      </link>
+    </model>
+
+    <!-- Asphalt plaza (20x20). Renders grey because it uses the deprecated
+         Ogre material script format Harmonic doesn't support, but the
+         label still works and it gives the rig a coherent area to sit on. -->
+    <include>
+      <name>asphalt_plaza</name>
+      <pose>0 0 0.01 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Asphalt Plane</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>10</label></plugin></include>
+
+    <!-- Buildings: real sizes are huge; spacing computed from measured
+         AABBs (Apartment 20x22, Office Building 18x18, School 33x18).
+         Each is placed so its near face is at least 11m from the asphalt
+         edge with no overlap between neighbours. -->
+    <include>
+      <name>apartment_n</name>
+      <pose>0 25 0 0 0 -1.5708</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Apartment</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>50</label></plugin></include>
+    <include>
+      <name>office_sw</name>
+      <pose>-15 -25 0 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Office Building</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>50</label></plugin></include>
+    <include>
+      <name>school_se</name>
+      <pose>22 -30 0 0 0 1.5708</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/School</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>50</label></plugin></include>
+
+    <!-- Cars in a row along the asphalt's south lane, all facing +X. -->
+    <include>
+      <name>car_hatchback_blue</name>
+      <pose>-7 2 0.06 0 0 1.5708</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Hatchback blue</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>40</label></plugin></include>
+    <include>
+      <name>car_pickup</name>
+      <pose>-3 2 0.06 0 0 1.5708</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pickup</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>40</label></plugin></include>
+    <include>
+      <name>car_suv</name>
+      <pose>1 2 0.06 0 0 1.5708</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/SUV</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>40</label></plugin></include>
+    <include>
+      <name>car_hatchback</name>
+      <pose>5 2 0.06 0 0 1.5708</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Hatchback</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>40</label></plugin></include>
+
+    <!-- Bus: 12.5m long. Placed perpendicular at the east end so its
+         length points across the road rather than along it. -->
+    <include>
+      <name>bus</name>
+      <pose>8 -5 0.06 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Bus</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>41</label></plugin></include>
+
+    <!-- Lamp posts at three corners of the asphalt -->
+    <include>
+      <name>lamp_post_ne</name>
+      <pose>9 9 0.06 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Lamp Post</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>60</label></plugin></include>
+    <include>
+      <name>lamp_post_nw</name>
+      <pose>-9 9 0.06 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Lamp Post</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>60</label></plugin></include>
+    <include>
+      <name>lamp_post_sw</name>
+      <pose>-9 -9 0.06 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Lamp Post</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>60</label></plugin></include>
+
+    <!-- Construction cones near the south-west corner -->
+    <include>
+      <name>cone_1</name>
+      <pose>-7 -3 0.06 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Construction Cone</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>60</label></plugin></include>
+    <include>
+      <name>cone_2</name>
+      <pose>-5 -3 0.06 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Construction Cone</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>60</label></plugin></include>
+
+    <!-- Mailbox on the south sidewalk -->
+    <include>
+      <name>mailbox_s</name>
+      <pose>-2 -8 0.06 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Mailbox</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>60</label></plugin></include>
+
+    <!-- Walking actor on the asphalt, raised so the model's pelvis-origin
+         doesn't sink into the ground. -->
+    <include>
+      <name>actor_1</name>
+      <pose>3 -5 1.0 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/chapulina/models/Walking actor</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>20</label></plugin></include>
+
+    <!-- Trees at the corners, well away from buildings -->
+    <include>
+      <name>tree_pine_nw</name>
+      <pose>-25 25 0 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine Tree</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>31</label></plugin></include>
+    <include>
+      <name>tree_pine_ne</name>
+      <pose>25 25 0 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine Tree</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>31</label></plugin></include>
+    <include>
+      <name>tree_pine_sw</name>
+      <pose>-30 -10 0 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pine Tree</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>31</label></plugin></include>
+    <include>
+      <name>tree_oak_se</name>
+      <pose>40 5 0 0 0 0</pose>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Oak tree</uri>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>31</label></plugin></include>
+  </world>
+</sdf>

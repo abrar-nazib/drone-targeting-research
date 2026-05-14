@@ -1,0 +1,92 @@
+# Project label schema for the drone targeting perception dataset.
+#
+# Label IDs are uint8 (0-255). Labels live in the R/G/B channels of
+# /segmentation/semantic/labels_map (replicated across all three).
+#
+# IDs are grouped in decade blocks so subclasses can be added later
+# without renumbering. ID 0 is reserved for "background / unlabeled":
+# anything in the world that lacks a Label plugin gets 0 by default.
+#
+# When you add new asset types, prefer extending an existing block
+# (e.g., a new vehicle sub-type as 43, 44, ...) over inventing a new
+# decade.
+
+schema:
+  0:   { name: background,      description: "Sky, void, anything without a Label plugin" }
+  10:  { name: ground,          description: "Road, sidewalk, generic walkable surface" }
+  11:  { name: sidewalk,        description: "Optional finer split from ground" }
+  20:  { name: person,          description: "Static or animated human actors" }
+  21:  { name: target_person,   description: "The specific actor being followed (high-priority)" }
+  30:  { name: vegetation,      description: "Trees, bushes — generic" }
+  31:  { name: tree,            description: "Optional finer split" }
+  32:  { name: bush_grass,      description: "Optional finer split" }
+  40:  { name: car,             description: "Passenger vehicles" }
+  41:  { name: truck_bus,       description: "Larger vehicles" }
+  42:  { name: target_vehicle,  description: "The specific vehicle being followed" }
+  50:  { name: building,        description: "Houses, shops, offices" }
+  51:  { name: wall_fence,      description: "Boundary infrastructure" }
+  60:  { name: street_furniture, description: "Lamp posts, signs, hydrants, bins, cones" }
+  70:  { name: water,           description: "Rivers, lakes, ocean" }
+  80:  { name: terrain_natural, description: "Rock, mountain, dirt (distinct from road)" }
+  90:  { name: drone,           description: "Other drones in the scene" }
+
+# Match rules used by tools/label_world.py to assign a label to each
+# <include> or <model>. Rules are evaluated in order; first match wins.
+#
+# `models` is exact-match against either:
+#   - the last path segment of an <include>'s <uri> (Fuel model name), OR
+#   - the optional <name> override inside the <include>, OR
+#   - the `name` attribute of an inline <model>
+#
+# `patterns` is regex-match against the same name. Only consulted if
+# no exact `models` match was found.
+
+default_label: 0
+
+models:
+  ground_plane:    10
+  Hatchback:       40
+  "Hatchback blue": 40
+  Pickup:          40
+  SUV:             40
+  Bus:             41
+  Ambulance:       40
+  "Police Car":    40
+  School:          50
+  "House 1":       50
+  "House 2":       50
+  "House 3":       50
+  "Lamp Post":     60
+  "Pine Tree":     31
+  "Oak tree":      31
+  Bush:            32
+  Rock:            80
+  "Collapsed House": 50
+  "Construction Cone": 60
+  "Walking actor": 20
+  "Walking person": 20
+  "Standing person": 20
+  "Male visitor": 20
+  "MaleVisitorPhone": 20
+  "Asphalt Plane":   10
+  "Apartment":       50
+  "Office Building": 50
+  "Warehouse":       50
+  "Post office":     50
+  "Law office":      50
+  "Mailbox":         60
+
+patterns:
+  - { regex: "(?i).*tree.*",          label: 31 }
+  - { regex: "(?i).*bush.*|.*grass.*", label: 32 }
+  - { regex: "(?i).*house.*|.*school.*|.*building.*|.*office.*|.*shop.*|.*warehouse.*", label: 50 }
+  - { regex: "(?i).*wall.*|.*fence.*", label: 51 }
+  - { regex: "(?i).*lamp.*|.*street.*sign.*|.*traffic.*sign.*|.*hydrant.*|.*bin.*|.*cone.*", label: 60 }
+  - { regex: "(?i).*hatchback.*|.*pickup.*|.*sedan.*|.*coupe.*|.*suv.*|.*car.*", label: 40 }
+  - { regex: "(?i).*bus.*|.*truck.*|.*lorry.*|.*van.*", label: 41 }
+  - { regex: "(?i).*actor.*|.*person.*|.*human.*|.*pedestrian.*", label: 20 }
+  - { regex: "(?i).*ground.*|.*road.*|.*tarmac.*|.*asphalt.*", label: 10 }
+  - { regex: "(?i).*sidewalk.*|.*pavement.*", label: 11 }
+  - { regex: "(?i).*water.*|.*pond.*|.*lake.*|.*river.*|.*ocean.*", label: 70 }
+  - { regex: "(?i).*rock.*|.*mountain.*|.*cliff.*|.*boulder.*|.*dirt.*", label: 80 }
+  - { regex: "(?i).*drone.*|.*quadcopter.*|.*uav.*",    label: 90 }

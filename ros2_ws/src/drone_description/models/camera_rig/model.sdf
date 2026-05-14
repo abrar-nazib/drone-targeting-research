@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<sdf version="1.10">
+  <model name="camera_rig">
+    <static>true</static>
+    <pose>0 0 1.5 0 0 0</pose>
+
+    <link name="base_link">
+      <visual name="body_visual">
+        <geometry>
+          <box>
+            <size>0.18 0.18 0.05</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.1 0.1 0.1 1</ambient>
+          <diffuse>0.15 0.15 0.15 1</diffuse>
+        </material>
+      </visual>
+
+      <sensor name="stereo_left" type="camera">
+        <pose>0.09 0.05 0 0 0 0</pose>
+        <topic>stereo/left</topic>
+        <update_rate>10</update_rate>
+        <always_on>1</always_on>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.5708</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>200</far>
+          </clip>
+          <optical_frame_id>stereo_left_optical</optical_frame_id>
+          <camera_info_topic>stereo/left/camera_info</camera_info_topic>
+        </camera>
+      </sensor>
+
+      <sensor name="stereo_left_depth" type="depth_camera">
+        <pose>0.09 0.05 0 0 0 0</pose>
+        <topic>stereo/left/depth</topic>
+        <update_rate>10</update_rate>
+        <always_on>1</always_on>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.5708</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+            <format>R_FLOAT32</format>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>200</far>
+          </clip>
+          <optical_frame_id>stereo_left_optical</optical_frame_id>
+        </camera>
+      </sensor>
+
+      <sensor name="stereo_right" type="camera">
+        <pose>0.09 -0.05 0 0 0 0</pose>
+        <topic>stereo/right</topic>
+        <update_rate>10</update_rate>
+        <always_on>1</always_on>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.5708</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>200</far>
+          </clip>
+          <optical_frame_id>stereo_right_optical</optical_frame_id>
+          <camera_info_topic>stereo/right/camera_info</camera_info_topic>
+        </camera>
+      </sensor>
+
+      <sensor name="segmentation_semantic" type="segmentation">
+        <pose>0.09 0 0 0 0 0</pose>
+        <topic>segmentation/semantic</topic>
+        <update_rate>10</update_rate>
+        <always_on>1</always_on>
+        <visualize>false</visualize>
+        <camera>
+          <segmentation_type>semantic</segmentation_type>
+          <horizontal_fov>1.5708</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>200</far>
+          </clip>
+          <optical_frame_id>segmentation_optical</optical_frame_id>
+        </camera>
+      </sensor>
+    </link>
+  </model>
+</sdf>

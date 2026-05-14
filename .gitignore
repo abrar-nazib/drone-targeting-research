@@ -1,0 +1,43 @@
+# ROS 2 / colcon build artifacts
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+**/CMakeFiles/
+**/CMakeCache.txt
+**/*.cmake.in
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Third-party clones (re-pull with `git clone -b jazzy https://github.com/clearpathrobotics/clearpath_simulator.git`)
+ros2_ws/src/clearpath_simulator/
+
+# Per-project external assets that are too large for GitHub's 50 MB limit.
+# Re-acquire by re-running tools/ scripts or fetching from upstream.
+ros2_ws/src/drone_description/models/prayag/textures/prayag_aerial.png
+
+# Subdivided office .glb meshes — regenerable via:
+#   tools/subdivide_dae_by_material.py + assimp .dae → .glb conversion
+# (see CLAUDE.md / research/ for the steps).
+ros2_ws/src/drone_description/models/office_subdivided/meshes/*.glb
+
+# Captured datasets and Fuel cache (large, ephemeral, project-specific)
+data/captures/
+data/gz_fuel_cache/
+
+# IDE + OS noise
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Python virtual envs
+.venv/
+venv/
+env/
+
+# Log files
+*.log

@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<sdf version="1.10">
+  <world name="prayag_labeled">
+    <gravity>0 0 -9.8066</gravity>
+
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>30.28723457907561</latitude_deg>
+      <longitude_deg>78.9810562133789</longitude_deg>
+      <elevation>621.6000000000004</elevation>
+    </spherical_coordinates>
+
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <dart>
+        <collision_detector>bullet</collision_detector>
+      </dart>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <scene>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0.6 0.7 0.85 1</background>
+      <sky>
+        <clouds>
+          <speed>6</speed>
+        </clouds>
+      </sky>
+      <shadows>1</shadows>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1.0 1.0 0.95 1</diffuse>
+      <specular>0.3 0.3 0.3 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+
+    <!-- 2.3km x 2.3km real-terrain heightmap from northern India,
+         satellite-textured (Sai Aravind / gazebo_terrain_generator).
+         Inline copy of the model so we can attach a Label plugin
+         directly to the visual rather than going through <include>. -->
+    <model name="prayag_terrain">
+      <static>true</static>
+      <pose>0 0 -39 0 0 0</pose>
+      <link name="ground">
+        <collision name="collision">
+          <geometry>
+            <heightmap>
+              <uri>model://prayag/textures/prayag_height_map.tif</uri>
+              <size>2312 2300 520.0</size>
+              <pos>0 0 -39</pos>
+            </heightmap>
+          </geometry>
+        </collision>
+        <visual name="ground_visual">
+          <geometry>
+            <heightmap>
+              <use_terrain_paging>false</use_terrain_paging>
+              <texture>
+                <diffuse>model://prayag/textures/prayag_aerial.png</diffuse>
+                <normal>model://prayag/textures/prayag_aerial.png</normal>
+                <size>2312 2300 520.0</size>
+              </texture>
+              <uri>model://prayag/textures/prayag_height_map.tif</uri>
+              <size>2312 2300 520.0</size>
+              <pos>0 0 -39</pos>
+              <sampling>2</sampling>
+            </heightmap>
+          </geometry>
+          <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>10</label></plugin>
+        </visual>
+      </link>
+    </model>
+  </world>
+</sdf>
